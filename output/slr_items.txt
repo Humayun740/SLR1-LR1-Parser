@@ -1,0 +1,39 @@
+I0:
+  ExprPrime -> . Expr
+  Expr -> . Expr + Term
+  Expr -> . Term
+  Term -> . Factor
+  Factor -> . id
+  GOTO transitions:
+    Expr -> I2
+    Factor -> I4
+    Term -> I3
+    id -> I1
+
+I1:
+  Factor -> id .
+
+I2:
+  ExprPrime -> Expr .
+  Expr -> Expr . + Term
+  GOTO transitions:
+    + -> I5
+
+I3:
+  Expr -> Term .
+
+I4:
+  Term -> Factor .
+
+I5:
+  Expr -> Expr + . Term
+  Term -> . Factor
+  Factor -> . id
+  GOTO transitions:
+    Factor -> I4
+    Term -> I6
+    id -> I1
+
+I6:
+  Expr -> Expr + Term .
+

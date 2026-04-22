@@ -1,0 +1,8 @@
+Grammar loaded from: input\grammar3.txt
+Input strings tested: 5
+Accepted strings: 1
+State count: 10
+Conflicts found: 1
+Grammar is NOT SLR(1).
+
+Generated files in: C:\Users\Humayun\Desktop\uni\CC 3\output

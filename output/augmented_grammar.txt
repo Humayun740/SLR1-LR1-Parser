@@ -1,0 +1,9 @@
+Original Start Symbol: Expr
+Augmented Start Symbol: ExprPrime
+
+Augmented Grammar:
+(0) ExprPrime -> Expr
+(1) Expr -> Expr + Term
+(2) Expr -> Term
+(3) Term -> Factor
+(4) Factor -> id

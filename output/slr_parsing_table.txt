@@ -1,0 +1,11 @@
+Parsing Table (ACTION | GOTO)
+State	+	id	$	Expr	Term	Factor
+I0		s1		2	3	4
+I1	r4 (Factor -> id)		r4 (Factor -> id)			
+I2	s5		acc			
+I3	r2 (Expr -> Term)		r2 (Expr -> Term)			
+I4	r3 (Term -> Factor)		r3 (Term -> Factor)			
+I5		s1			6	4
+I6	r1 (Expr -> Expr + Term)		r1 (Expr -> Expr + Term)			
+
+No conflicts found. Grammar is SLR(1).

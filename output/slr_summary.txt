@@ -1,0 +1,6 @@
+Grammar loaded from: input\grammar1.txt
+Input strings tested: 5
+Accepted strings: 2
+State count: 7
+Conflicts found: 0
+Grammar is SLR(1).

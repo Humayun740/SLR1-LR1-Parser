@@ -1,0 +1,31 @@
+Input: id + id * id
+No parse tree (input rejected)
+
+Input: ( id )
+No parse tree (input rejected)
+
+Input: id
+`-- Expr
+    `-- Term
+        `-- Factor
+            `-- id
+
+Input: id + id + id
+`-- Expr
+    |-- Expr
+    |   |-- Expr
+    |   |   `-- Term
+    |   |       `-- Factor
+    |   |           `-- id
+    |   |-- +
+    |   `-- Term
+    |       `-- Factor
+    |           `-- id
+    |-- +
+    `-- Term
+        `-- Factor
+            `-- id
+
+Input: ( id + id ) * id
+No parse tree (input rejected)
+
