@@ -1,0 +1,53 @@
+=================================================================
+  PART 3: PARSER COMPARISON & ANALYSIS
+=================================================================
+Grammar: input\grammar2.txt
+
+-----------------------------------------------------------------
+  TASK 3.1: CONFLICT ANALYSIS
+-----------------------------------------------------------------
+Both parsers were run on the same grammar.
+
+SLR(1) conflicts: 0
+  (none)
+
+LR(1) conflicts: 0
+  (none)
+
+RESULT: Both parsers handle this grammar without conflicts.
+NOTE: To demonstrate LR(1) superiority, run with grammar3.txt
+  (Start -> L = R | R  /  L -> * R | id  /  R -> L).
+
+-----------------------------------------------------------------
+  TASK 3.2: PERFORMANCE COMPARISON
+-----------------------------------------------------------------
+
+  Metric                                     SLR(1)       LR(1)       
+  --------------------------------------------------------------------
+  Number of states                           12           22          
+  ACTION table entries (memory proxy)        36           56          
+  GOTO table entries (memory proxy)          9            15          
+  Total table entries                        45           71          
+  Table build time (ms)                      7            6           
+  Parse time for 10 strings (ms)             18           4           
+  Strings accepted                           10           10          
+  Conflicts found                            0            0           
+
+  Analysis:
+  - LR(1) generates 10 more states (22 vs 12) because each state encodes exact lookahead sets.
+  - LR(1) table has 71 entries vs SLR(1)'s 45 entries.
+  - SLR(1): faster to build (fewer states), less memory, but weaker.
+  - LR(1): stronger parser power at the cost of more states and memory.
+
+-----------------------------------------------------------------
+  KEY ALGORITHMIC DIFFERENCES
+-----------------------------------------------------------------
+  SLR(1) REDUCE rule: if [A -> α .] is in state I,
+    add REDUCE(A->α) for ALL terminals in FOLLOW(A).
+
+  LR(1) REDUCE rule: if [A -> α ., a] is in state I,
+    add REDUCE(A->α) ONLY for lookahead terminal a.
+
+  This precision means LR(1) can avoid conflicts that SLR(1) cannot,
+  making it strictly more powerful: every SLR(1) grammar is LR(1),
+  but not every LR(1) grammar is SLR(1).

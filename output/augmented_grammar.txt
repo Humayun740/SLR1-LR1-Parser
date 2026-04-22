@@ -5,5 +5,7 @@ Augmented Grammar:
 (0) ExprPrime -> Expr
 (1) Expr -> Expr + Term
 (2) Expr -> Term
-(3) Term -> Factor
-(4) Factor -> id
+(3) Term -> Term * Factor
+(4) Term -> Factor
+(5) Factor -> ( Expr )
+(6) Factor -> id

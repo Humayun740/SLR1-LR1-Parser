@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(javac -d . src/*.java)",
+      "Bash(java Main input/grammar2.txt input/input_valid.txt output)",
+      "Bash(java Main input/grammar_with_conflict.txt input/input_valid.txt output/conflict)",
+      "Bash(java Main input/grammar1.txt input/input_valid.txt output/g1)",
+      "Bash(java Main input/grammar3.txt input/input_valid.txt output/g3)",
+      "Bash(rm -f *.class)",
+      "Bash(javac *.java)",
+      "Bash(java -cp src Main input/grammar2.txt input/input_valid.txt output)",
+      "Bash(java -cp src Main input/grammar2.txt /dev/stdin output)",
+      "Bash(java -cp src Main input/grammar2.txt input/input_invalid.txt output)",
+      "Bash(cat)",
+      "Bash(java -cp src Main input/grammar3.txt /tmp/g3_input.txt output)",
+      "Bash(java -cp src Main input/grammar_with_conflict.txt /tmp/conflict_input.txt output)",
+      "Bash(java -cp src Main input/grammar1.txt input/input_valid.txt output)",
+      "Bash(java -cp src Main input/grammar3.txt input/input_valid.txt output)",
+      "Bash(java -cp src Main input\\\\grammar2.txt input\\\\input_valid.txt output)"
+    ],
+    "additionalDirectories": [
+      "D:\\Compiler Construction\\A3\\SLR1-LR1-Parser"
+    ]
+  }
+}

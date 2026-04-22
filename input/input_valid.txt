@@ -1,5 +1,12 @@
+# Valid input strings for the expression grammar (grammar2.txt)
+# Covers: simple id, addition, multiplication, precedence, parentheses, nesting
+id
+id + id
+id * id
 id + id * id
 ( id )
-id
-id + id + id
 ( id + id ) * id
+id + id + id
+id * id * id
+( id + id ) * ( id + id )
+( ( id ) )

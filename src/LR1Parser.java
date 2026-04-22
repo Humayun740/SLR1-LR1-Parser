@@ -8,13 +8,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SLRParser {
+public class LR1Parser {
     private final Grammar grammar;
-    private final List<Set<Items.LR0Item>> states;
+    private final List<Set<Items.LR1Item>> states;
     private final Map<Integer, Map<String, Integer>> transitions;
     private ParsingTable parsingTable;
+    private Map<String, Set<String>> firstSets;
 
-    public SLRParser(Grammar grammar) {
+    public LR1Parser(Grammar grammar) {
         this.grammar = grammar;
         this.states = new ArrayList<>();
         this.transitions = new LinkedHashMap<>();
@@ -23,9 +24,11 @@ public class SLRParser {
     public void buildCanonicalCollection() {
         states.clear();
         transitions.clear();
+        firstSets = grammar.computeFirstSets();
 
         Items.Production augmentedProduction = grammar.getProductions().get(0);
-        Set<Items.LR0Item> start = closure(setOf(new Items.LR0Item(augmentedProduction, 0)));
+        Items.LR1Item startItem = new Items.LR1Item(augmentedProduction, 0, Items.END_MARKER);
+        Set<Items.LR1Item> start = closure(setOf(startItem));
         states.add(start);
 
         Deque<Integer> queue = new ArrayDeque<>();
@@ -33,10 +36,10 @@ public class SLRParser {
 
         while (!queue.isEmpty()) {
             int stateId = queue.poll();
-            Set<Items.LR0Item> state = states.get(stateId);
+            Set<Items.LR1Item> state = states.get(stateId);
 
             for (String symbol : grammar.getGrammarSymbols()) {
-                Set<Items.LR0Item> next = goTo(state, symbol);
+                Set<Items.LR1Item> next = goTo(state, symbol);
                 if (next.isEmpty()) {
                     continue;
                 }
@@ -59,12 +62,11 @@ public class SLRParser {
         }
 
         ParsingTable table = new ParsingTable();
-        Map<String, Set<String>> followSets = grammar.computeFollowSets();
 
         for (int i = 0; i < states.size(); i++) {
-            Set<Items.LR0Item> state = states.get(i);
+            Set<Items.LR1Item> state = states.get(i);
 
-            for (Items.LR0Item item : state) {
+            for (Items.LR1Item item : state) {
                 String nextSymbol = item.symbolAfterDot();
                 if (nextSymbol != null) {
                     Integer target = transitions.getOrDefault(i, Map.of()).get(nextSymbol);
@@ -79,16 +81,18 @@ public class SLRParser {
                     continue;
                 }
 
+                // dot is at end — reduce or accept
                 Items.Production production = item.getProduction();
                 if (production.getLhs().equals(grammar.getStartSymbol())) {
-                    table.setAction(i, Items.END_MARKER, Items.Action.accept());
+                    // accept only on $ lookahead
+                    if (item.getLookahead().equals(Items.END_MARKER)) {
+                        table.setAction(i, Items.END_MARKER, Items.Action.accept());
+                    }
                     continue;
                 }
 
-                Set<String> follow = followSets.getOrDefault(production.getLhs(), Set.of());
-                for (String terminal : follow) {
-                    table.setAction(i, terminal, Items.Action.reduce(production));
-                }
+                // LR(1): reduce only on the item's specific lookahead
+                table.setAction(i, item.getLookahead(), Items.Action.reduce(production));
             }
         }
 
@@ -96,7 +100,7 @@ public class SLRParser {
         return table;
     }
 
-    public ParseResult parse(List<String> inputTokens) {
+    public SLRParser.ParseResult parse(List<String> inputTokens) {
         if (parsingTable == null) {
             buildParsingTable();
         }
@@ -126,7 +130,7 @@ public class SLRParser {
                         formatStack(symbolStack, stateStack),
                         formatInput(tokens, inputIndex),
                         "error"));
-                return new ParseResult(false, trace, null,
+                return new SLRParser.ParseResult(false, trace, null,
                         "No ACTION entry for state I" + state + " and symbol '" + lookahead + "'.");
             }
 
@@ -169,7 +173,7 @@ public class SLRParser {
                 int gotoState = stateStack.peek();
                 Integer nextState = parsingTable.getGoto(gotoState, production.getLhs());
                 if (nextState == null) {
-                    return new ParseResult(false, trace, null,
+                    return new SLRParser.ParseResult(false, trace, null,
                             "Missing GOTO for state I" + gotoState + " and non-terminal '"
                                     + production.getLhs() + "'.");
                 }
@@ -183,7 +187,7 @@ public class SLRParser {
                         formatInput(tokens, inputIndex),
                         "accept"));
                 Tree.Node tree = nodeStack.isEmpty() ? null : nodeStack.peek();
-                return new ParseResult(true, trace, tree, "accepted");
+                return new SLRParser.ParseResult(true, trace, tree, "accepted");
             }
 
             stepNumber++;
@@ -194,12 +198,13 @@ public class SLRParser {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < states.size(); i++) {
             builder.append("I").append(i).append(":").append(System.lineSeparator());
-            List<Items.LR0Item> sortedItems = new ArrayList<>(states.get(i));
+            List<Items.LR1Item> sortedItems = new ArrayList<>(states.get(i));
             sortedItems.sort(Comparator
-                    .comparing((Items.LR0Item it) -> it.getProduction().getId())
-                    .thenComparing(Items.LR0Item::getDotPosition));
+                    .comparing((Items.LR1Item it) -> it.getProduction().getId())
+                    .thenComparing(Items.LR1Item::getDotPosition)
+                    .thenComparing(Items.LR1Item::getLookahead));
 
-            for (Items.LR0Item item : sortedItems) {
+            for (Items.LR1Item item : sortedItems) {
                 builder.append("  ").append(item.formatWithDot()).append(System.lineSeparator());
             }
 
@@ -216,11 +221,10 @@ public class SLRParser {
 
             builder.append(System.lineSeparator());
         }
-
         return builder.toString();
     }
 
-    public List<Set<Items.LR0Item>> getStates() {
+    public List<Set<Items.LR1Item>> getStates() {
         return states;
     }
 
@@ -228,22 +232,38 @@ public class SLRParser {
         return transitions;
     }
 
-    private Set<Items.LR0Item> closure(Set<Items.LR0Item> items) {
-        Set<Items.LR0Item> closure = new LinkedHashSet<>(items);
+    // CLOSURE for LR(1): for each [A -> α . B β, a], add [B -> . γ, b]
+    // where b is in FIRST(β a)
+    private Set<Items.LR1Item> closure(Set<Items.LR1Item> items) {
+        Set<Items.LR1Item> closure = new LinkedHashSet<>(items);
         boolean changed;
 
         do {
             changed = false;
-            List<Items.LR0Item> snapshot = new ArrayList<>(closure);
-            for (Items.LR0Item item : snapshot) {
-                String symbol = item.symbolAfterDot();
-                if (symbol == null || !grammar.getNonTerminals().contains(symbol)) {
+            List<Items.LR1Item> snapshot = new ArrayList<>(closure);
+            for (Items.LR1Item item : snapshot) {
+                String B = item.symbolAfterDot();
+                if (B == null || !grammar.getNonTerminals().contains(B)) {
                     continue;
                 }
-                for (Items.Production production : grammar.getProductionsFor(symbol)) {
-                    Items.LR0Item candidate = new Items.LR0Item(production, 0);
-                    if (closure.add(candidate)) {
-                        changed = true;
+
+                // β is the rest of the RHS after B
+                List<String> rhs = item.getProduction().getRhs();
+                int dotPos = item.getDotPosition();
+                List<String> beta = rhs.subList(dotPos + 1, rhs.size());
+
+                // FIRST(β a) where a is the current lookahead
+                List<String> betaA = new ArrayList<>(beta);
+                betaA.add(item.getLookahead());
+                Set<String> lookaheads = grammar.firstOfSequence(betaA, firstSets);
+                lookaheads.remove(Items.EPSILON);
+
+                for (Items.Production production : grammar.getProductionsFor(B)) {
+                    for (String la : lookaheads) {
+                        Items.LR1Item candidate = new Items.LR1Item(production, 0, la);
+                        if (closure.add(candidate)) {
+                            changed = true;
+                        }
                     }
                 }
             }
@@ -252,9 +272,9 @@ public class SLRParser {
         return closure;
     }
 
-    private Set<Items.LR0Item> goTo(Set<Items.LR0Item> state, String symbol) {
-        Set<Items.LR0Item> moved = new LinkedHashSet<>();
-        for (Items.LR0Item item : state) {
+    private Set<Items.LR1Item> goTo(Set<Items.LR1Item> state, String symbol) {
+        Set<Items.LR1Item> moved = new LinkedHashSet<>();
+        for (Items.LR1Item item : state) {
             if (symbol.equals(item.symbolAfterDot())) {
                 moved.add(item.advanceDot());
             }
@@ -265,7 +285,7 @@ public class SLRParser {
         return closure(moved);
     }
 
-    private int indexOfState(Set<Items.LR0Item> candidate) {
+    private int indexOfState(Set<Items.LR1Item> candidate) {
         for (int i = 0; i < states.size(); i++) {
             if (states.get(i).equals(candidate)) {
                 return i;
@@ -274,8 +294,8 @@ public class SLRParser {
         return -1;
     }
 
-    private Set<Items.LR0Item> setOf(Items.LR0Item item) {
-        Set<Items.LR0Item> set = new LinkedHashSet<>();
+    private Set<Items.LR1Item> setOf(Items.LR1Item item) {
+        Set<Items.LR1Item> set = new LinkedHashSet<>();
         set.add(item);
         return set;
     }
@@ -295,51 +315,5 @@ public class SLRParser {
             builder.append(" ").append(statesList.get(i + 1));
         }
         return builder.toString();
-    }
-
-    public static class ParseResult {
-        private final boolean accepted;
-        private final List<Items.ParsingStep> steps;
-        private final Tree.Node parseTree;
-        private final String message;
-
-        public ParseResult(boolean accepted, List<Items.ParsingStep> steps, Tree.Node parseTree, String message) {
-            this.accepted = accepted;
-            this.steps = steps;
-            this.parseTree = parseTree;
-            this.message = message;
-        }
-
-        public boolean isAccepted() {
-            return accepted;
-        }
-
-        public List<Items.ParsingStep> getSteps() {
-            return steps;
-        }
-
-        public Tree.Node getParseTree() {
-            return parseTree;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public String formatTrace(String inputLabel) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("Input: ").append(inputLabel.isEmpty() ? "<empty>" : inputLabel).append(System.lineSeparator());
-            builder.append("Step   | Stack                                    | Input                     | Action")
-                    .append(System.lineSeparator());
-            builder.append("-------+------------------------------------------+---------------------------+----------------")
-                    .append(System.lineSeparator());
-            for (Items.ParsingStep step : steps) {
-                builder.append(step).append(System.lineSeparator());
-            }
-            builder.append("Result: ").append(accepted ? "accepted" : "rejected")
-                    .append(" (" + message + ")")
-                    .append(System.lineSeparator());
-            return builder.toString();
-        }
     }
 }

@@ -1,5 +1,13 @@
+# Invalid input strings for the expression grammar (grammar2.txt)
+# Covers: missing operand, missing operator, unmatched paren, empty input,
+# consecutive operators, and extra tokens
+# (blank line below = empty input test)
+
 + id
 id *
 ( id + )
 id id
-
+( id
+id )
+* *
+id + + id

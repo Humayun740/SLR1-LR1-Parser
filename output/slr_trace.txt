@@ -1,54 +1,189 @@
+Input: id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | id $                      | shift 2
+2      | 0 id 2                                   | $                         | reduce Factor -> id
+3      | 0 Factor 5                               | $                         | reduce Term -> Factor
+4      | 0 Term 4                                 | $                         | reduce Expr -> Term
+5      | 0 Expr 3                                 | $                         | accept
+Result: accepted (accepted)
+
+Input: id + id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | id + id $                 | shift 2
+2      | 0 id 2                                   | + id $                    | reduce Factor -> id
+3      | 0 Factor 5                               | + id $                    | reduce Term -> Factor
+4      | 0 Term 4                                 | + id $                    | reduce Expr -> Term
+5      | 0 Expr 3                                 | + id $                    | shift 7
+6      | 0 Expr 3 + 7                             | id $                      | shift 2
+7      | 0 Expr 3 + 7 id 2                        | $                         | reduce Factor -> id
+8      | 0 Expr 3 + 7 Factor 5                    | $                         | reduce Term -> Factor
+9      | 0 Expr 3 + 7 Term 10                     | $                         | reduce Expr -> Expr + Term
+10     | 0 Expr 3                                 | $                         | accept
+Result: accepted (accepted)
+
+Input: id * id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | id * id $                 | shift 2
+2      | 0 id 2                                   | * id $                    | reduce Factor -> id
+3      | 0 Factor 5                               | * id $                    | reduce Term -> Factor
+4      | 0 Term 4                                 | * id $                    | shift 8
+5      | 0 Term 4 * 8                             | id $                      | shift 2
+6      | 0 Term 4 * 8 id 2                        | $                         | reduce Factor -> id
+7      | 0 Term 4 * 8 Factor 11                   | $                         | reduce Term -> Term * Factor
+8      | 0 Term 4                                 | $                         | reduce Expr -> Term
+9      | 0 Expr 3                                 | $                         | accept
+Result: accepted (accepted)
+
 Input: id + id * id
 Step   | Stack                                    | Input                     | Action
 -------+------------------------------------------+---------------------------+----------------
-1      | 0                                        | id + id * id $            | shift 1
-2      | 0 id 1                                   | + id * id $               | reduce Factor -> id
-3      | 0 Factor 4                               | + id * id $               | reduce Term -> Factor
-4      | 0 Term 3                                 | + id * id $               | reduce Expr -> Term
-5      | 0 Expr 2                                 | + id * id $               | shift 5
-6      | 0 Expr 2 + 5                             | id * id $                 | shift 1
-7      | 0 Expr 2 + 5 id 1                        | * id $                    | error
-Result: rejected (No ACTION entry for state I1 and symbol '*'.)
+1      | 0                                        | id + id * id $            | shift 2
+2      | 0 id 2                                   | + id * id $               | reduce Factor -> id
+3      | 0 Factor 5                               | + id * id $               | reduce Term -> Factor
+4      | 0 Term 4                                 | + id * id $               | reduce Expr -> Term
+5      | 0 Expr 3                                 | + id * id $               | shift 7
+6      | 0 Expr 3 + 7                             | id * id $                 | shift 2
+7      | 0 Expr 3 + 7 id 2                        | * id $                    | reduce Factor -> id
+8      | 0 Expr 3 + 7 Factor 5                    | * id $                    | reduce Term -> Factor
+9      | 0 Expr 3 + 7 Term 10                     | * id $                    | shift 8
+10     | 0 Expr 3 + 7 Term 10 * 8                 | id $                      | shift 2
+11     | 0 Expr 3 + 7 Term 10 * 8 id 2            | $                         | reduce Factor -> id
+12     | 0 Expr 3 + 7 Term 10 * 8 Factor 11       | $                         | reduce Term -> Term * Factor
+13     | 0 Expr 3 + 7 Term 10                     | $                         | reduce Expr -> Expr + Term
+14     | 0 Expr 3                                 | $                         | accept
+Result: accepted (accepted)
 
 Input: ( id )
 Step   | Stack                                    | Input                     | Action
 -------+------------------------------------------+---------------------------+----------------
-1      | 0                                        | ( id ) $                  | error
-Result: rejected (No ACTION entry for state I0 and symbol '('.)
-
-Input: id
-Step   | Stack                                    | Input                     | Action
--------+------------------------------------------+---------------------------+----------------
-1      | 0                                        | id $                      | shift 1
-2      | 0 id 1                                   | $                         | reduce Factor -> id
-3      | 0 Factor 4                               | $                         | reduce Term -> Factor
-4      | 0 Term 3                                 | $                         | reduce Expr -> Term
-5      | 0 Expr 2                                 | $                         | accept
-Result: accepted (accepted)
-
-Input: id + id + id
-Step   | Stack                                    | Input                     | Action
--------+------------------------------------------+---------------------------+----------------
-1      | 0                                        | id + id + id $            | shift 1
-2      | 0 id 1                                   | + id + id $               | reduce Factor -> id
-3      | 0 Factor 4                               | + id + id $               | reduce Term -> Factor
-4      | 0 Term 3                                 | + id + id $               | reduce Expr -> Term
-5      | 0 Expr 2                                 | + id + id $               | shift 5
-6      | 0 Expr 2 + 5                             | id + id $                 | shift 1
-7      | 0 Expr 2 + 5 id 1                        | + id $                    | reduce Factor -> id
-8      | 0 Expr 2 + 5 Factor 4                    | + id $                    | reduce Term -> Factor
-9      | 0 Expr 2 + 5 Term 6                      | + id $                    | reduce Expr -> Expr + Term
-10     | 0 Expr 2                                 | + id $                    | shift 5
-11     | 0 Expr 2 + 5                             | id $                      | shift 1
-12     | 0 Expr 2 + 5 id 1                        | $                         | reduce Factor -> id
-13     | 0 Expr 2 + 5 Factor 4                    | $                         | reduce Term -> Factor
-14     | 0 Expr 2 + 5 Term 6                      | $                         | reduce Expr -> Expr + Term
-15     | 0 Expr 2                                 | $                         | accept
+1      | 0                                        | ( id ) $                  | shift 1
+2      | 0 ( 1                                    | id ) $                    | shift 2
+3      | 0 ( 1 id 2                               | ) $                       | reduce Factor -> id
+4      | 0 ( 1 Factor 5                           | ) $                       | reduce Term -> Factor
+5      | 0 ( 1 Term 4                             | ) $                       | reduce Expr -> Term
+6      | 0 ( 1 Expr 6                             | ) $                       | shift 9
+7      | 0 ( 1 Expr 6 ) 9                         | $                         | reduce Factor -> ( Expr )
+8      | 0 Factor 5                               | $                         | reduce Term -> Factor
+9      | 0 Term 4                                 | $                         | reduce Expr -> Term
+10     | 0 Expr 3                                 | $                         | accept
 Result: accepted (accepted)
 
 Input: ( id + id ) * id
 Step   | Stack                                    | Input                     | Action
 -------+------------------------------------------+---------------------------+----------------
-1      | 0                                        | ( id + id ) * id $        | error
-Result: rejected (No ACTION entry for state I0 and symbol '('.)
+1      | 0                                        | ( id + id ) * id $        | shift 1
+2      | 0 ( 1                                    | id + id ) * id $          | shift 2
+3      | 0 ( 1 id 2                               | + id ) * id $             | reduce Factor -> id
+4      | 0 ( 1 Factor 5                           | + id ) * id $             | reduce Term -> Factor
+5      | 0 ( 1 Term 4                             | + id ) * id $             | reduce Expr -> Term
+6      | 0 ( 1 Expr 6                             | + id ) * id $             | shift 7
+7      | 0 ( 1 Expr 6 + 7                         | id ) * id $               | shift 2
+8      | 0 ( 1 Expr 6 + 7 id 2                    | ) * id $                  | reduce Factor -> id
+9      | 0 ( 1 Expr 6 + 7 Factor 5                | ) * id $                  | reduce Term -> Factor
+10     | 0 ( 1 Expr 6 + 7 Term 10                 | ) * id $                  | reduce Expr -> Expr + Term
+11     | 0 ( 1 Expr 6                             | ) * id $                  | shift 9
+12     | 0 ( 1 Expr 6 ) 9                         | * id $                    | reduce Factor -> ( Expr )
+13     | 0 Factor 5                               | * id $                    | reduce Term -> Factor
+14     | 0 Term 4                                 | * id $                    | shift 8
+15     | 0 Term 4 * 8                             | id $                      | shift 2
+16     | 0 Term 4 * 8 id 2                        | $                         | reduce Factor -> id
+17     | 0 Term 4 * 8 Factor 11                   | $                         | reduce Term -> Term * Factor
+18     | 0 Term 4                                 | $                         | reduce Expr -> Term
+19     | 0 Expr 3                                 | $                         | accept
+Result: accepted (accepted)
+
+Input: id + id + id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | id + id + id $            | shift 2
+2      | 0 id 2                                   | + id + id $               | reduce Factor -> id
+3      | 0 Factor 5                               | + id + id $               | reduce Term -> Factor
+4      | 0 Term 4                                 | + id + id $               | reduce Expr -> Term
+5      | 0 Expr 3                                 | + id + id $               | shift 7
+6      | 0 Expr 3 + 7                             | id + id $                 | shift 2
+7      | 0 Expr 3 + 7 id 2                        | + id $                    | reduce Factor -> id
+8      | 0 Expr 3 + 7 Factor 5                    | + id $                    | reduce Term -> Factor
+9      | 0 Expr 3 + 7 Term 10                     | + id $                    | reduce Expr -> Expr + Term
+10     | 0 Expr 3                                 | + id $                    | shift 7
+11     | 0 Expr 3 + 7                             | id $                      | shift 2
+12     | 0 Expr 3 + 7 id 2                        | $                         | reduce Factor -> id
+13     | 0 Expr 3 + 7 Factor 5                    | $                         | reduce Term -> Factor
+14     | 0 Expr 3 + 7 Term 10                     | $                         | reduce Expr -> Expr + Term
+15     | 0 Expr 3                                 | $                         | accept
+Result: accepted (accepted)
+
+Input: id * id * id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | id * id * id $            | shift 2
+2      | 0 id 2                                   | * id * id $               | reduce Factor -> id
+3      | 0 Factor 5                               | * id * id $               | reduce Term -> Factor
+4      | 0 Term 4                                 | * id * id $               | shift 8
+5      | 0 Term 4 * 8                             | id * id $                 | shift 2
+6      | 0 Term 4 * 8 id 2                        | * id $                    | reduce Factor -> id
+7      | 0 Term 4 * 8 Factor 11                   | * id $                    | reduce Term -> Term * Factor
+8      | 0 Term 4                                 | * id $                    | shift 8
+9      | 0 Term 4 * 8                             | id $                      | shift 2
+10     | 0 Term 4 * 8 id 2                        | $                         | reduce Factor -> id
+11     | 0 Term 4 * 8 Factor 11                   | $                         | reduce Term -> Term * Factor
+12     | 0 Term 4                                 | $                         | reduce Expr -> Term
+13     | 0 Expr 3                                 | $                         | accept
+Result: accepted (accepted)
+
+Input: ( id + id ) * ( id + id )
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | ( id + id ) * ( id + id ) $ | shift 1
+2      | 0 ( 1                                    | id + id ) * ( id + id ) $ | shift 2
+3      | 0 ( 1 id 2                               | + id ) * ( id + id ) $    | reduce Factor -> id
+4      | 0 ( 1 Factor 5                           | + id ) * ( id + id ) $    | reduce Term -> Factor
+5      | 0 ( 1 Term 4                             | + id ) * ( id + id ) $    | reduce Expr -> Term
+6      | 0 ( 1 Expr 6                             | + id ) * ( id + id ) $    | shift 7
+7      | 0 ( 1 Expr 6 + 7                         | id ) * ( id + id ) $      | shift 2
+8      | 0 ( 1 Expr 6 + 7 id 2                    | ) * ( id + id ) $         | reduce Factor -> id
+9      | 0 ( 1 Expr 6 + 7 Factor 5                | ) * ( id + id ) $         | reduce Term -> Factor
+10     | 0 ( 1 Expr 6 + 7 Term 10                 | ) * ( id + id ) $         | reduce Expr -> Expr + Term
+11     | 0 ( 1 Expr 6                             | ) * ( id + id ) $         | shift 9
+12     | 0 ( 1 Expr 6 ) 9                         | * ( id + id ) $           | reduce Factor -> ( Expr )
+13     | 0 Factor 5                               | * ( id + id ) $           | reduce Term -> Factor
+14     | 0 Term 4                                 | * ( id + id ) $           | shift 8
+15     | 0 Term 4 * 8                             | ( id + id ) $             | shift 1
+16     | 0 Term 4 * 8 ( 1                         | id + id ) $               | shift 2
+17     | 0 Term 4 * 8 ( 1 id 2                    | + id ) $                  | reduce Factor -> id
+18     | 0 Term 4 * 8 ( 1 Factor 5                | + id ) $                  | reduce Term -> Factor
+19     | 0 Term 4 * 8 ( 1 Term 4                  | + id ) $                  | reduce Expr -> Term
+20     | 0 Term 4 * 8 ( 1 Expr 6                  | + id ) $                  | shift 7
+21     | 0 Term 4 * 8 ( 1 Expr 6 + 7              | id ) $                    | shift 2
+22     | 0 Term 4 * 8 ( 1 Expr 6 + 7 id 2         | ) $                       | reduce Factor -> id
+23     | 0 Term 4 * 8 ( 1 Expr 6 + 7 Factor 5     | ) $                       | reduce Term -> Factor
+24     | 0 Term 4 * 8 ( 1 Expr 6 + 7 Term 10      | ) $                       | reduce Expr -> Expr + Term
+25     | 0 Term 4 * 8 ( 1 Expr 6                  | ) $                       | shift 9
+26     | 0 Term 4 * 8 ( 1 Expr 6 ) 9              | $                         | reduce Factor -> ( Expr )
+27     | 0 Term 4 * 8 Factor 11                   | $                         | reduce Term -> Term * Factor
+28     | 0 Term 4                                 | $                         | reduce Expr -> Term
+29     | 0 Expr 3                                 | $                         | accept
+Result: accepted (accepted)
+
+Input: ( ( id ) )
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | ( ( id ) ) $              | shift 1
+2      | 0 ( 1                                    | ( id ) ) $                | shift 1
+3      | 0 ( 1 ( 1                                | id ) ) $                  | shift 2
+4      | 0 ( 1 ( 1 id 2                           | ) ) $                     | reduce Factor -> id
+5      | 0 ( 1 ( 1 Factor 5                       | ) ) $                     | reduce Term -> Factor
+6      | 0 ( 1 ( 1 Term 4                         | ) ) $                     | reduce Expr -> Term
+7      | 0 ( 1 ( 1 Expr 6                         | ) ) $                     | shift 9
+8      | 0 ( 1 ( 1 Expr 6 ) 9                     | ) $                       | reduce Factor -> ( Expr )
+9      | 0 ( 1 Factor 5                           | ) $                       | reduce Term -> Factor
+10     | 0 ( 1 Term 4                             | ) $                       | reduce Expr -> Term
+11     | 0 ( 1 Expr 6                             | ) $                       | shift 9
+12     | 0 ( 1 Expr 6 ) 9                         | $                         | reduce Factor -> ( Expr )
+13     | 0 Factor 5                               | $                         | reduce Term -> Factor
+14     | 0 Term 4                                 | $                         | reduce Expr -> Term
+15     | 0 Expr 3                                 | $                         | accept
+Result: accepted (accepted)
 

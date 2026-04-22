@@ -47,6 +47,22 @@ public class ParsingTable {
         return gotoTable.getOrDefault(state, Collections.emptyMap()).get(nonTerminal);
     }
 
+    public int getActionEntryCount() {
+        int count = 0;
+        for (Map<String, Items.Action> row : actionTable.values()) {
+            count += row.size();
+        }
+        return count;
+    }
+
+    public int getGotoEntryCount() {
+        int count = 0;
+        for (Map<String, Integer> row : gotoTable.values()) {
+            count += row.size();
+        }
+        return count;
+    }
+
     public boolean hasConflicts() {
         return !conflicts.isEmpty();
     }

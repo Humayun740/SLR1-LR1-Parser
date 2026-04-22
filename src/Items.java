@@ -188,6 +188,83 @@ public final class Items {
         }
     }
 
+    public static final class LR1Item {
+        private final Production production;
+        private final int dotPosition;
+        private final String lookahead;
+
+        public LR1Item(Production production, int dotPosition, String lookahead) {
+            this.production = production;
+            this.dotPosition = dotPosition;
+            this.lookahead = lookahead;
+        }
+
+        public Production getProduction() {
+            return production;
+        }
+
+        public int getDotPosition() {
+            return dotPosition;
+        }
+
+        public String getLookahead() {
+            return lookahead;
+        }
+
+        public boolean isDotAtEnd() {
+            return dotPosition >= production.getRhs().size();
+        }
+
+        public String symbolAfterDot() {
+            if (isDotAtEnd()) {
+                return null;
+            }
+            return production.getRhs().get(dotPosition);
+        }
+
+        public LR1Item advanceDot() {
+            return new LR1Item(production, dotPosition + 1, lookahead);
+        }
+
+        public String formatWithDot() {
+            List<String> rhs = production.getRhs();
+            List<String> parts = new ArrayList<>();
+            for (int i = 0; i <= rhs.size(); i++) {
+                if (i == dotPosition) {
+                    parts.add(".");
+                }
+                if (i < rhs.size()) {
+                    parts.add(rhs.get(i));
+                }
+            }
+            return "[" + production.getLhs() + " -> " + String.join(" ", parts) + ", " + lookahead + "]";
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            LR1Item lr1Item = (LR1Item) o;
+            return dotPosition == lr1Item.dotPosition
+                    && production.getId() == lr1Item.production.getId()
+                    && lookahead.equals(lr1Item.lookahead);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(production.getId(), dotPosition, lookahead);
+        }
+
+        @Override
+        public String toString() {
+            return formatWithDot();
+        }
+    }
+
     public static final class ParsingStep {
         private final int step;
         private final String stack;

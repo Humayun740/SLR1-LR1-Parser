@@ -1,4 +1,4 @@
-# Bottom-Up Parsing Assignment (SLR(1) Part)
+# SLR(1) and LR(1) Parser
 
 ## Team
 - Member 1: RollNumber1
@@ -6,81 +6,93 @@
 - Section: A
 
 ## Language
-- Java
-
-## Implemented Scope
-- Part 1 (SLR(1)):
-  - CFG input from file
-  - Grammar augmentation
-  - Canonical LR(0) item sets (CLOSURE and GOTO)
-  - SLR(1) parsing table using FOLLOW sets
-  - Conflict detection (shift/reduce and reduce/reduce)
-  - Stack-based shift-reduce parsing trace
-  - Parse tree generation for accepted strings
+Java (JDK 11+)
 
 ## Source Files
-- src/Main.java
-- src/Grammar.java
-- src/SLRParser.java
-- src/Items.java
-- src/ParsingTable.java
-- src/Stack.java
-- src/Tree.java
+```
+src/
+  Main.java          - Driver: runs both parsers, prints output, writes files
+  Grammar.java       - CFG loading, augmentation, FIRST/FOLLOW sets
+  SLRParser.java     - SLR(1) canonical collection, parsing table, parser
+  LR1Parser.java     - LR(1) canonical collection, parsing table, parser
+  Items.java         - Production, LR0Item, LR1Item, Action, ParsingStep
+  ParsingTable.java  - ACTION/GOTO table with conflict detection
+  Stack.java         - Generic stack
+  Tree.java          - Parse tree node with ASCII rendering
+```
 
 ## Compilation
-```powershell
+From the project root:
+```
 javac src\*.java
 ```
 
-## Execution
-```powershell
+## Running
+```
 java -cp src Main <grammar-file> <input-file> [output-dir]
 ```
 
-Example:
-```powershell
+All output is printed to the terminal AND written to files in `output-dir`.
+
+### Examples
+
+**Grammar 2 (full expression grammar — no conflicts):**
+```
 java -cp src Main input\grammar2.txt input\input_valid.txt output
 ```
 
-## Input File Format
-- One production per line
-- Format: `NonTerminal -> alt1 | alt2 | ...`
-- Symbols in RHS must be space-separated
-- Epsilon can be written as `epsilon` or `@`
+**Grammar 3 (LR(1) superiority demo — SLR has conflict, LR(1) does not):**
+```
+java -cp src Main input\grammar3.txt input\input_valid.txt output
+```
 
-Example:
-```text
+**Invalid inputs (error handling):**
+```
+java -cp src Main input\grammar2.txt input\input_invalid.txt output
+```
+
+**Dangling else (conflict in both parsers — ambiguous grammar):**
+```
+java -cp src Main input\grammar_with_conflict.txt input\input_valid.txt output
+```
+
+## Input Grammar Format
+One production per line. Alternatives separated by `|`.
+Non-terminals must start with an uppercase letter and be multi-character.
+Epsilon: use `epsilon` or `@`.
+```
 Expr -> Expr + Term | Term
 Term -> Term * Factor | Factor
 Factor -> ( Expr ) | id
 ```
 
-## Input Strings File Format
-- One input string per line
-- Tokens must be space-separated
-- Do not include `$` (added automatically by parser)
-
-Example:
-```text
+## Input Strings Format
+One string per line, tokens space-separated. `$` is added automatically.
+Lines starting with `#` are comments and are skipped.
+A blank line tests the empty-input case.
+```
 id + id * id
 ( id + id ) * id
 id
 ```
 
-## Generated Output Files
-- output/augmented_grammar.txt
-- output/slr_items.txt
-- output/slr_parsing_table.txt
-- output/slr_trace.txt
-- output/parse_trees.txt
-- output/slr_summary.txt
-
-## Sample SLR Command
-```powershell
-java -cp src Main input\grammar2.txt input\input_valid.txt output
-```
+## Output Files (written to output/)
+| File | Contents |
+|------|----------|
+| `augmented_grammar.txt` | Grammar with augmented start symbol |
+| `slr_items.txt` | All SLR(1) LR(0) item sets with transitions |
+| `slr_parsing_table.txt` | SLR(1) ACTION/GOTO table + conflicts |
+| `slr_trace.txt` | Step-by-step SLR(1) parsing trace |
+| `parse_trees.txt` | SLR(1) parse trees + reduction steps |
+| `slr_summary.txt` | SLR(1) statistics |
+| `lr1_items.txt` | All LR(1) item sets with lookaheads |
+| `lr1_parsing_table.txt` | LR(1) ACTION/GOTO table + conflicts |
+| `lr1_trace.txt` | Step-by-step LR(1) parsing trace |
+| `lr1_parse_trees.txt` | LR(1) parse trees + reduction steps |
+| `lr1_summary.txt` | LR(1) statistics |
+| `comparison.txt` | Side-by-side comparison (states, table size, time, conflicts) |
 
 ## Known Limitations
-- Input tokenizer expects whitespace-separated tokens.
-- Grammar reader assumes one production per line.
-- LR(1) parser is intentionally not included in this part (to be implemented by teammate).
+- Tokens must be whitespace-separated (no character-level lexer).
+- Grammar non-terminals must be multi-character starting with uppercase.
+- Single-character non-terminals (E, T, F) are not supported.

@@ -1,2 +1,5 @@
+# Test Grammar 4: Dangling Else (Section 8.4)
+# This grammar has a classic Shift/Reduce conflict in both SLR(1) and LR(1)
+# because the grammar itself is ambiguous (not fixable by lookahead).
 Stmt -> if Expr then Stmt | if Expr then Stmt else Stmt | other
 Expr -> id
