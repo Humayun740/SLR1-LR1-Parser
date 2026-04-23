@@ -1,0 +1,113 @@
+Input: other
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | other $                   | shift 2
+2      | 0 other 2                                | $                         | reduce Stmt -> other
+3      | 0 Stmt 3                                 | $                         | accept
+Result: accepted (accepted)
+
+Input: if id then other
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | if id then other $        | shift 1
+2      | 0 if 1                                   | id then other $           | shift 4
+3      | 0 if 1 id 4                              | then other $              | reduce Expr -> id
+4      | 0 if 1 Expr 5                            | then other $              | shift 6
+5      | 0 if 1 Expr 5 then 6                     | other $                   | shift 8
+6      | 0 if 1 Expr 5 then 6 other 8             | $                         | reduce Stmt -> other
+7      | 0 if 1 Expr 5 then 6 Stmt 9              | $                         | reduce Stmt -> if Expr then Stmt
+8      | 0 Stmt 3                                 | $                         | accept
+Result: accepted (accepted)
+
+Input: if id then other else other
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | if id then other else other $ | shift 1
+2      | 0 if 1                                   | id then other else other $ | shift 4
+3      | 0 if 1 id 4                              | then other else other $   | reduce Expr -> id
+4      | 0 if 1 Expr 5                            | then other else other $   | shift 6
+5      | 0 if 1 Expr 5 then 6                     | other else other $        | shift 8
+6      | 0 if 1 Expr 5 then 6 other 8             | else other $              | reduce Stmt -> other
+7      | 0 if 1 Expr 5 then 6 Stmt 9              | else other $              | shift 11
+8      | 0 if 1 Expr 5 then 6 Stmt 9 else 11      | other $                   | shift 2
+9      | 0 if 1 Expr 5 then 6 Stmt 9 else 11 other 2 | $                         | reduce Stmt -> other
+10     | 0 if 1 Expr 5 then 6 Stmt 9 else 11 Stmt 13 | $                         | reduce Stmt -> if Expr then Stmt else Stmt
+11     | 0 Stmt 3                                 | $                         | accept
+Result: accepted (accepted)
+
+Input: if id then if id then other else other
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | if id then if id then other else other $ | shift 1
+2      | 0 if 1                                   | id then if id then other else other $ | shift 4
+3      | 0 if 1 id 4                              | then if id then other else other $ | reduce Expr -> id
+4      | 0 if 1 Expr 5                            | then if id then other else other $ | shift 6
+5      | 0 if 1 Expr 5 then 6                     | if id then other else other $ | shift 7
+6      | 0 if 1 Expr 5 then 6 if 7                | id then other else other $ | shift 4
+7      | 0 if 1 Expr 5 then 6 if 7 id 4           | then other else other $   | reduce Expr -> id
+8      | 0 if 1 Expr 5 then 6 if 7 Expr 10        | then other else other $   | shift 12
+9      | 0 if 1 Expr 5 then 6 if 7 Expr 10 then 12 | other else other $        | shift 8
+10     | 0 if 1 Expr 5 then 6 if 7 Expr 10 then 12 other 8 | else other $              | reduce Stmt -> other
+11     | 0 if 1 Expr 5 then 6 if 7 Expr 10 then 12 Stmt 14 | else other $              | shift 15
+12     | 0 if 1 Expr 5 then 6 if 7 Expr 10 then 12 Stmt 14 else 15 | other $                   | shift 8
+13     | 0 if 1 Expr 5 then 6 if 7 Expr 10 then 12 Stmt 14 else 15 other 8 | $                         | reduce Stmt -> other
+14     | 0 if 1 Expr 5 then 6 if 7 Expr 10 then 12 Stmt 14 else 15 Stmt 16 | $                         | reduce Stmt -> if Expr then Stmt else Stmt
+15     | 0 if 1 Expr 5 then 6 Stmt 9              | $                         | reduce Stmt -> if Expr then Stmt
+16     | 0 Stmt 3                                 | $                         | accept
+Result: accepted (accepted)
+
+Input: if id then if id then other
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | if id then if id then other $ | shift 1
+2      | 0 if 1                                   | id then if id then other $ | shift 4
+3      | 0 if 1 id 4                              | then if id then other $   | reduce Expr -> id
+4      | 0 if 1 Expr 5                            | then if id then other $   | shift 6
+5      | 0 if 1 Expr 5 then 6                     | if id then other $        | shift 7
+6      | 0 if 1 Expr 5 then 6 if 7                | id then other $           | shift 4
+7      | 0 if 1 Expr 5 then 6 if 7 id 4           | then other $              | reduce Expr -> id
+8      | 0 if 1 Expr 5 then 6 if 7 Expr 10        | then other $              | shift 12
+9      | 0 if 1 Expr 5 then 6 if 7 Expr 10 then 12 | other $                   | shift 8
+10     | 0 if 1 Expr 5 then 6 if 7 Expr 10 then 12 other 8 | $                         | reduce Stmt -> other
+11     | 0 if 1 Expr 5 then 6 if 7 Expr 10 then 12 Stmt 14 | $                         | reduce Stmt -> if Expr then Stmt
+12     | 0 if 1 Expr 5 then 6 Stmt 9              | $                         | reduce Stmt -> if Expr then Stmt
+13     | 0 Stmt 3                                 | $                         | accept
+Result: accepted (accepted)
+
+Input: if id other
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | if id other $             | shift 1
+2      | 0 if 1                                   | id other $                | shift 4
+3      | 0 if 1 id 4                              | other $                   | error
+Result: rejected (No ACTION entry for state I4 and symbol 'other'.)
+
+Input: if then other
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | if then other $           | shift 1
+2      | 0 if 1                                   | then other $              | error
+Result: rejected (No ACTION entry for state I1 and symbol 'then'.)
+
+Input: else other
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | else other $              | error
+Result: rejected (No ACTION entry for state I0 and symbol 'else'.)
+
+Input: if id then
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | if id then $              | shift 1
+2      | 0 if 1                                   | id then $                 | shift 4
+3      | 0 if 1 id 4                              | then $                    | reduce Expr -> id
+4      | 0 if 1 Expr 5                            | then $                    | shift 6
+5      | 0 if 1 Expr 5 then 6                     | $                         | error
+Result: rejected (No ACTION entry for state I6 and symbol '$'.)
+
+Input: id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | id $                      | error
+Result: rejected (No ACTION entry for state I0 and symbol 'id'.)
+

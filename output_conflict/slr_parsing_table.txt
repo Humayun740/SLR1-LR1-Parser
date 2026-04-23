@@ -1,0 +1,15 @@
+Parsing Table (ACTION | GOTO)
+State	if	then	else	other	id	$	Stmt	Expr
+I0	s1			s2			3	
+I1					s4			5
+I2			r3 (Stmt -> other)			r3 (Stmt -> other)		
+I3						acc		
+I4		r4 (Expr -> id)						
+I5		s6						
+I6	s1			s2			7	
+I7			r1 (Stmt -> if Expr then Stmt)			r1 (Stmt -> if Expr then Stmt)		
+I8	s1			s2			9	
+I9			r2 (Stmt -> if Expr then Stmt else Stmt)			r2 (Stmt -> if Expr then Stmt else Stmt)		
+
+Conflicts:
+- Shift/Reduce conflict at state I7, symbol 'else': existing=r1 (Stmt -> if Expr then Stmt), incoming=s8

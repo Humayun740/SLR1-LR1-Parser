@@ -1,0 +1,120 @@
+Input: id
+Reduction steps:
+  1. reduce Factor -> id
+  2. reduce Term -> Factor
+  3. reduce Expr -> Term
+Parse tree:
+`-- Expr
+    `-- Term
+        `-- Factor
+            `-- id
+
+Input: id + id
+Reduction steps:
+  1. reduce Factor -> id
+  2. reduce Term -> Factor
+  3. reduce Expr -> Term
+  4. reduce Factor -> id
+  5. reduce Term -> Factor
+  6. reduce Expr -> Expr + Term
+Parse tree:
+`-- Expr
+    |-- Expr
+    |   `-- Term
+    |       `-- Factor
+    |           `-- id
+    |-- +
+    `-- Term
+        `-- Factor
+            `-- id
+
+Input: id * id
+Reduction steps:
+  1. reduce Factor -> id
+  2. reduce Term -> Factor
+  3. reduce Factor -> id
+  4. reduce Term -> Term * Factor
+  5. reduce Expr -> Term
+Parse tree:
+`-- Expr
+    `-- Term
+        |-- Term
+        |   `-- Factor
+        |       `-- id
+        |-- *
+        `-- Factor
+            `-- id
+
+Input: id + id * id
+Reduction steps:
+  1. reduce Factor -> id
+  2. reduce Term -> Factor
+  3. reduce Expr -> Term
+  4. reduce Factor -> id
+  5. reduce Term -> Factor
+  6. reduce Factor -> id
+  7. reduce Term -> Term * Factor
+  8. reduce Expr -> Expr + Term
+Parse tree:
+`-- Expr
+    |-- Expr
+    |   `-- Term
+    |       `-- Factor
+    |           `-- id
+    |-- +
+    `-- Term
+        |-- Term
+        |   `-- Factor
+        |       `-- id
+        |-- *
+        `-- Factor
+            `-- id
+
+Input: ( id + id ) * id
+Reduction steps:
+  1. reduce Factor -> id
+  2. reduce Term -> Factor
+  3. reduce Expr -> Term
+  4. reduce Factor -> id
+  5. reduce Term -> Factor
+  6. reduce Expr -> Expr + Term
+  7. reduce Factor -> ( Expr )
+  8. reduce Term -> Factor
+  9. reduce Factor -> id
+  10. reduce Term -> Term * Factor
+  11. reduce Expr -> Term
+Parse tree:
+`-- Expr
+    `-- Term
+        |-- Term
+        |   `-- Factor
+        |       |-- (
+        |       |-- Expr
+        |       |   |-- Expr
+        |       |   |   `-- Term
+        |       |   |       `-- Factor
+        |       |   |           `-- id
+        |       |   |-- +
+        |       |   `-- Term
+        |       |       `-- Factor
+        |       |           `-- id
+        |       `-- )
+        |-- *
+        `-- Factor
+            `-- id
+
+Input: + id
+No parse tree (input rejected)
+
+Input: id *
+No parse tree (input rejected)
+
+Input: ( id + )
+No parse tree (input rejected)
+
+Input: id id
+No parse tree (input rejected)
+
+Input: ( id
+No parse tree (input rejected)
+

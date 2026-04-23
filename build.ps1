@@ -5,7 +5,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$Grammar = "input/grammar2.txt"
+$Grammar = "input/grammar3.txt"
 $Input   = "input/input_valid.txt"
 $OutDir  = "output"
 

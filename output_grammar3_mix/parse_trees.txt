@@ -1,0 +1,115 @@
+Input: id
+Reduction steps:
+  1. reduce L -> id
+  2. reduce R -> L
+  3. reduce Start -> R
+Parse tree:
+`-- Start
+    `-- R
+        `-- L
+            `-- id
+
+Input: * id
+Reduction steps:
+  1. reduce L -> id
+  2. reduce R -> L
+  3. reduce L -> * R
+  4. reduce R -> L
+  5. reduce Start -> R
+Parse tree:
+`-- Start
+    `-- R
+        `-- L
+            |-- *
+            `-- R
+                `-- L
+                    `-- id
+
+Input: id = id
+Reduction steps:
+  1. reduce L -> id
+  2. reduce L -> id
+  3. reduce R -> L
+  4. reduce Start -> L = R
+Parse tree:
+`-- Start
+    |-- L
+    |   `-- id
+    |-- =
+    `-- R
+        `-- L
+            `-- id
+
+Input: * id = id
+Reduction steps:
+  1. reduce L -> id
+  2. reduce R -> L
+  3. reduce L -> * R
+  4. reduce L -> id
+  5. reduce R -> L
+  6. reduce Start -> L = R
+Parse tree:
+`-- Start
+    |-- L
+    |   |-- *
+    |   `-- R
+    |       `-- L
+    |           `-- id
+    |-- =
+    `-- R
+        `-- L
+            `-- id
+
+Input: id = * id
+Reduction steps:
+  1. reduce L -> id
+  2. reduce L -> id
+  3. reduce R -> L
+  4. reduce L -> * R
+  5. reduce R -> L
+  6. reduce Start -> L = R
+Parse tree:
+`-- Start
+    |-- L
+    |   `-- id
+    |-- =
+    `-- R
+        `-- L
+            |-- *
+            `-- R
+                `-- L
+                    `-- id
+
+Input: * * id
+Reduction steps:
+  1. reduce L -> id
+  2. reduce R -> L
+  3. reduce L -> * R
+  4. reduce R -> L
+  5. reduce L -> * R
+  6. reduce R -> L
+  7. reduce Start -> R
+Parse tree:
+`-- Start
+    `-- R
+        `-- L
+            |-- *
+            `-- R
+                `-- L
+                    |-- *
+                    `-- R
+                        `-- L
+                            `-- id
+
+Input: id id
+No parse tree (input rejected)
+
+Input: = id
+No parse tree (input rejected)
+
+Input: id =
+No parse tree (input rejected)
+
+Input: * = id
+No parse tree (input rejected)
+

@@ -1,0 +1,113 @@
+Input: id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | id $                      | shift 2
+2      | 0 id 2                                   | $                         | reduce L -> id
+3      | 0 L 4                                    | $                         | reduce R -> L
+4      | 0 R 5                                    | $                         | reduce Start -> R
+5      | 0 Start 3                                | $                         | accept
+Result: accepted (accepted)
+
+Input: * id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | * id $                    | shift 1
+2      | 0 * 1                                    | id $                      | shift 2
+3      | 0 * 1 id 2                               | $                         | reduce L -> id
+4      | 0 * 1 L 6                                | $                         | reduce R -> L
+5      | 0 * 1 R 7                                | $                         | reduce L -> * R
+6      | 0 L 4                                    | $                         | reduce R -> L
+7      | 0 R 5                                    | $                         | reduce Start -> R
+8      | 0 Start 3                                | $                         | accept
+Result: accepted (accepted)
+
+Input: id = id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | id = id $                 | shift 2
+2      | 0 id 2                                   | = id $                    | reduce L -> id
+3      | 0 L 4                                    | = id $                    | shift 8
+4      | 0 L 4 = 8                                | id $                      | shift 2
+5      | 0 L 4 = 8 id 2                           | $                         | reduce L -> id
+6      | 0 L 4 = 8 L 6                            | $                         | reduce R -> L
+7      | 0 L 4 = 8 R 9                            | $                         | reduce Start -> L = R
+8      | 0 Start 3                                | $                         | accept
+Result: accepted (accepted)
+
+Input: * id = id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | * id = id $               | shift 1
+2      | 0 * 1                                    | id = id $                 | shift 2
+3      | 0 * 1 id 2                               | = id $                    | reduce L -> id
+4      | 0 * 1 L 6                                | = id $                    | reduce R -> L
+5      | 0 * 1 R 7                                | = id $                    | reduce L -> * R
+6      | 0 L 4                                    | = id $                    | shift 8
+7      | 0 L 4 = 8                                | id $                      | shift 2
+8      | 0 L 4 = 8 id 2                           | $                         | reduce L -> id
+9      | 0 L 4 = 8 L 6                            | $                         | reduce R -> L
+10     | 0 L 4 = 8 R 9                            | $                         | reduce Start -> L = R
+11     | 0 Start 3                                | $                         | accept
+Result: accepted (accepted)
+
+Input: id = * id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | id = * id $               | shift 2
+2      | 0 id 2                                   | = * id $                  | reduce L -> id
+3      | 0 L 4                                    | = * id $                  | shift 8
+4      | 0 L 4 = 8                                | * id $                    | shift 1
+5      | 0 L 4 = 8 * 1                            | id $                      | shift 2
+6      | 0 L 4 = 8 * 1 id 2                       | $                         | reduce L -> id
+7      | 0 L 4 = 8 * 1 L 6                        | $                         | reduce R -> L
+8      | 0 L 4 = 8 * 1 R 7                        | $                         | reduce L -> * R
+9      | 0 L 4 = 8 L 6                            | $                         | reduce R -> L
+10     | 0 L 4 = 8 R 9                            | $                         | reduce Start -> L = R
+11     | 0 Start 3                                | $                         | accept
+Result: accepted (accepted)
+
+Input: * * id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | * * id $                  | shift 1
+2      | 0 * 1                                    | * id $                    | shift 1
+3      | 0 * 1 * 1                                | id $                      | shift 2
+4      | 0 * 1 * 1 id 2                           | $                         | reduce L -> id
+5      | 0 * 1 * 1 L 6                            | $                         | reduce R -> L
+6      | 0 * 1 * 1 R 7                            | $                         | reduce L -> * R
+7      | 0 * 1 L 6                                | $                         | reduce R -> L
+8      | 0 * 1 R 7                                | $                         | reduce L -> * R
+9      | 0 L 4                                    | $                         | reduce R -> L
+10     | 0 R 5                                    | $                         | reduce Start -> R
+11     | 0 Start 3                                | $                         | accept
+Result: accepted (accepted)
+
+Input: id id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | id id $                   | shift 2
+2      | 0 id 2                                   | id $                      | error
+Result: rejected (No ACTION entry for state I2 and symbol 'id'.)
+
+Input: = id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | = id $                    | error
+Result: rejected (No ACTION entry for state I0 and symbol '='.)
+
+Input: id =
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | id = $                    | shift 2
+2      | 0 id 2                                   | = $                       | reduce L -> id
+3      | 0 L 4                                    | = $                       | shift 8
+4      | 0 L 4 = 8                                | $                         | error
+Result: rejected (No ACTION entry for state I8 and symbol '$'.)
+
+Input: * = id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | * = id $                  | shift 1
+2      | 0 * 1                                    | = id $                    | error
+Result: rejected (No ACTION entry for state I1 and symbol '='.)
+

@@ -1,0 +1,130 @@
+I0:
+  [StmtPrime -> . Stmt, $]
+  [Stmt -> . if Expr then Stmt, $]
+  [Stmt -> . if Expr then Stmt else Stmt, $]
+  [Stmt -> . other, $]
+  GOTO transitions:
+    Stmt -> I3
+    if -> I1
+    other -> I2
+
+I1:
+  [Stmt -> if . Expr then Stmt, $]
+  [Stmt -> if . Expr then Stmt else Stmt, $]
+  [Expr -> . id, then]
+  GOTO transitions:
+    Expr -> I5
+    id -> I4
+
+I2:
+  [Stmt -> other ., $]
+
+I3:
+  [StmtPrime -> Stmt ., $]
+
+I4:
+  [Expr -> id ., then]
+
+I5:
+  [Stmt -> if Expr . then Stmt, $]
+  [Stmt -> if Expr . then Stmt else Stmt, $]
+  GOTO transitions:
+    then -> I6
+
+I6:
+  [Stmt -> . if Expr then Stmt, $]
+  [Stmt -> . if Expr then Stmt, else]
+  [Stmt -> if Expr then . Stmt, $]
+  [Stmt -> . if Expr then Stmt else Stmt, $]
+  [Stmt -> . if Expr then Stmt else Stmt, else]
+  [Stmt -> if Expr then . Stmt else Stmt, $]
+  [Stmt -> . other, $]
+  [Stmt -> . other, else]
+  GOTO transitions:
+    Stmt -> I9
+    if -> I7
+    other -> I8
+
+I7:
+  [Stmt -> if . Expr then Stmt, $]
+  [Stmt -> if . Expr then Stmt, else]
+  [Stmt -> if . Expr then Stmt else Stmt, $]
+  [Stmt -> if . Expr then Stmt else Stmt, else]
+  [Expr -> . id, then]
+  GOTO transitions:
+    Expr -> I10
+    id -> I4
+
+I8:
+  [Stmt -> other ., $]
+  [Stmt -> other ., else]
+
+I9:
+  [Stmt -> if Expr then Stmt ., $]
+  [Stmt -> if Expr then Stmt . else Stmt, $]
+  GOTO transitions:
+    else -> I11
+
+I10:
+  [Stmt -> if Expr . then Stmt, $]
+  [Stmt -> if Expr . then Stmt, else]
+  [Stmt -> if Expr . then Stmt else Stmt, $]
+  [Stmt -> if Expr . then Stmt else Stmt, else]
+  GOTO transitions:
+    then -> I12
+
+I11:
+  [Stmt -> . if Expr then Stmt, $]
+  [Stmt -> . if Expr then Stmt else Stmt, $]
+  [Stmt -> if Expr then Stmt else . Stmt, $]
+  [Stmt -> . other, $]
+  GOTO transitions:
+    Stmt -> I13
+    if -> I1
+    other -> I2
+
+I12:
+  [Stmt -> . if Expr then Stmt, $]
+  [Stmt -> . if Expr then Stmt, else]
+  [Stmt -> if Expr then . Stmt, $]
+  [Stmt -> if Expr then . Stmt, else]
+  [Stmt -> . if Expr then Stmt else Stmt, $]
+  [Stmt -> . if Expr then Stmt else Stmt, else]
+  [Stmt -> if Expr then . Stmt else Stmt, $]
+  [Stmt -> if Expr then . Stmt else Stmt, else]
+  [Stmt -> . other, $]
+  [Stmt -> . other, else]
+  GOTO transitions:
+    Stmt -> I14
+    if -> I7
+    other -> I8
+
+I13:
+  [Stmt -> if Expr then Stmt else Stmt ., $]
+
+I14:
+  [Stmt -> if Expr then Stmt ., $]
+  [Stmt -> if Expr then Stmt ., else]
+  [Stmt -> if Expr then Stmt . else Stmt, $]
+  [Stmt -> if Expr then Stmt . else Stmt, else]
+  GOTO transitions:
+    else -> I15
+
+I15:
+  [Stmt -> . if Expr then Stmt, $]
+  [Stmt -> . if Expr then Stmt, else]
+  [Stmt -> . if Expr then Stmt else Stmt, $]
+  [Stmt -> . if Expr then Stmt else Stmt, else]
+  [Stmt -> if Expr then Stmt else . Stmt, $]
+  [Stmt -> if Expr then Stmt else . Stmt, else]
+  [Stmt -> . other, $]
+  [Stmt -> . other, else]
+  GOTO transitions:
+    Stmt -> I16
+    if -> I7
+    other -> I8
+
+I16:
+  [Stmt -> if Expr then Stmt else Stmt ., $]
+  [Stmt -> if Expr then Stmt else Stmt ., else]
+

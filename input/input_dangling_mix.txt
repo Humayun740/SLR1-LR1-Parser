@@ -1,0 +1,11 @@
+# Mixed valid/invalid strings for dangling-else grammar
+other
+if id then other
+if id then other else other
+if id then if id then other else other
+if id then if id then other
+if id other
+if then other
+else other
+if id then
+id

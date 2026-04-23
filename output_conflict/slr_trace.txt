@@ -1,0 +1,60 @@
+Input: id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | id $                      | error
+Result: rejected (No ACTION entry for state I0 and symbol 'id'.)
+
+Input: id + id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | id + id $                 | error
+Result: rejected (No ACTION entry for state I0 and symbol 'id'.)
+
+Input: id * id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | id * id $                 | error
+Result: rejected (No ACTION entry for state I0 and symbol 'id'.)
+
+Input: id + id * id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | id + id * id $            | error
+Result: rejected (No ACTION entry for state I0 and symbol 'id'.)
+
+Input: ( id )
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | ( id ) $                  | error
+Result: rejected (No ACTION entry for state I0 and symbol '('.)
+
+Input: ( id + id ) * id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | ( id + id ) * id $        | error
+Result: rejected (No ACTION entry for state I0 and symbol '('.)
+
+Input: id + id + id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | id + id + id $            | error
+Result: rejected (No ACTION entry for state I0 and symbol 'id'.)
+
+Input: id * id * id
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | id * id * id $            | error
+Result: rejected (No ACTION entry for state I0 and symbol 'id'.)
+
+Input: ( id + id ) * ( id + id )
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | ( id + id ) * ( id + id ) $ | error
+Result: rejected (No ACTION entry for state I0 and symbol '('.)
+
+Input: ( ( id ) )
+Step   | Stack                                    | Input                     | Action
+-------+------------------------------------------+---------------------------+----------------
+1      | 0                                        | ( ( id ) ) $              | error
+Result: rejected (No ACTION entry for state I0 and symbol '('.)
+

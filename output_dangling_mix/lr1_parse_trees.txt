@@ -1,0 +1,100 @@
+Input: other
+Reduction steps:
+  1. reduce Stmt -> other
+Parse tree:
+`-- Stmt
+    `-- other
+
+Input: if id then other
+Reduction steps:
+  1. reduce Expr -> id
+  2. reduce Stmt -> other
+  3. reduce Stmt -> if Expr then Stmt
+Parse tree:
+`-- Stmt
+    |-- if
+    |-- Expr
+    |   `-- id
+    |-- then
+    `-- Stmt
+        `-- other
+
+Input: if id then other else other
+Reduction steps:
+  1. reduce Expr -> id
+  2. reduce Stmt -> other
+  3. reduce Stmt -> other
+  4. reduce Stmt -> if Expr then Stmt else Stmt
+Parse tree:
+`-- Stmt
+    |-- if
+    |-- Expr
+    |   `-- id
+    |-- then
+    |-- Stmt
+    |   `-- other
+    |-- else
+    `-- Stmt
+        `-- other
+
+Input: if id then if id then other else other
+Reduction steps:
+  1. reduce Expr -> id
+  2. reduce Expr -> id
+  3. reduce Stmt -> other
+  4. reduce Stmt -> other
+  5. reduce Stmt -> if Expr then Stmt else Stmt
+  6. reduce Stmt -> if Expr then Stmt
+Parse tree:
+`-- Stmt
+    |-- if
+    |-- Expr
+    |   `-- id
+    |-- then
+    `-- Stmt
+        |-- if
+        |-- Expr
+        |   `-- id
+        |-- then
+        |-- Stmt
+        |   `-- other
+        |-- else
+        `-- Stmt
+            `-- other
+
+Input: if id then if id then other
+Reduction steps:
+  1. reduce Expr -> id
+  2. reduce Expr -> id
+  3. reduce Stmt -> other
+  4. reduce Stmt -> if Expr then Stmt
+  5. reduce Stmt -> if Expr then Stmt
+Parse tree:
+`-- Stmt
+    |-- if
+    |-- Expr
+    |   `-- id
+    |-- then
+    `-- Stmt
+        |-- if
+        |-- Expr
+        |   `-- id
+        |-- then
+        `-- Stmt
+            `-- other
+
+Input: if id other
+No parse tree (input rejected)
+
+Input: if then other
+No parse tree (input rejected)
+
+Input: else other
+No parse tree (input rejected)
+
+Input: if id then
+No parse tree (input rejected)
+
+Input: id
+No parse tree (input rejected)
+

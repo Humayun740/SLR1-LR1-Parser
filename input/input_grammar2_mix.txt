@@ -1,0 +1,11 @@
+# Mixed valid/invalid strings for grammar2
+id
+id + id
+id * id
+id + id * id
+( id + id ) * id
++ id
+id *
+( id + )
+id id
+( id

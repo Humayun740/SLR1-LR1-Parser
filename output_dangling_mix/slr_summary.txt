@@ -1,0 +1,11 @@
+SLR(1) Parser Summary
+Grammar loaded from: input\grammar_with_conflict.txt
+Input strings tested: 10
+Accepted strings: 3
+State count: 10
+Conflicts found: 1
+Grammar is NOT SLR(1).
+Conflicts:
+  - Shift/Reduce conflict at state I7, symbol 'else': existing=r1 (Stmt -> if Expr then Stmt), incoming=s8
+Table build time: 27 ms
+Parse time: 33 ms

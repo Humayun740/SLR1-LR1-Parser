@@ -1,0 +1,9 @@
+LR(1) Parser Summary
+Grammar loaded from: input\grammar3.txt
+Input strings tested: 10
+Accepted strings: 6
+State count: 14
+Conflicts found: 0
+Grammar is LR(1).
+Table build time: 7 ms
+Parse time: 7 ms
