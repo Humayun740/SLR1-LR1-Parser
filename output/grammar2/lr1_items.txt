@@ -1,0 +1,254 @@
+I0:
+  [ExprPrime -> . Expr, $]
+  [Expr -> . Expr + Term, $]
+  [Expr -> . Expr + Term, +]
+  [Expr -> . Term, $]
+  [Expr -> . Term, +]
+  [Term -> . Term * Factor, $]
+  [Term -> . Term * Factor, *]
+  [Term -> . Term * Factor, +]
+  [Term -> . Factor, $]
+  [Term -> . Factor, *]
+  [Term -> . Factor, +]
+  [Factor -> . ( Expr ), $]
+  [Factor -> . ( Expr ), *]
+  [Factor -> . ( Expr ), +]
+  [Factor -> . id, $]
+  [Factor -> . id, *]
+  [Factor -> . id, +]
+  GOTO transitions:
+    ( -> I1
+    Expr -> I3
+    Factor -> I5
+    Term -> I4
+    id -> I2
+
+I1:
+  [Expr -> . Expr + Term, )]
+  [Expr -> . Expr + Term, +]
+  [Expr -> . Term, )]
+  [Expr -> . Term, +]
+  [Term -> . Term * Factor, )]
+  [Term -> . Term * Factor, *]
+  [Term -> . Term * Factor, +]
+  [Term -> . Factor, )]
+  [Term -> . Factor, *]
+  [Term -> . Factor, +]
+  [Factor -> . ( Expr ), )]
+  [Factor -> . ( Expr ), *]
+  [Factor -> . ( Expr ), +]
+  [Factor -> ( . Expr ), $]
+  [Factor -> ( . Expr ), *]
+  [Factor -> ( . Expr ), +]
+  [Factor -> . id, )]
+  [Factor -> . id, *]
+  [Factor -> . id, +]
+  GOTO transitions:
+    ( -> I6
+    Expr -> I8
+    Factor -> I10
+    Term -> I9
+    id -> I7
+
+I2:
+  [Factor -> id ., $]
+  [Factor -> id ., *]
+  [Factor -> id ., +]
+
+I3:
+  [ExprPrime -> Expr ., $]
+  [Expr -> Expr . + Term, $]
+  [Expr -> Expr . + Term, +]
+  GOTO transitions:
+    + -> I11
+
+I4:
+  [Expr -> Term ., $]
+  [Expr -> Term ., +]
+  [Term -> Term . * Factor, $]
+  [Term -> Term . * Factor, *]
+  [Term -> Term . * Factor, +]
+  GOTO transitions:
+    * -> I12
+
+I5:
+  [Term -> Factor ., $]
+  [Term -> Factor ., *]
+  [Term -> Factor ., +]
+
+I6:
+  [Expr -> . Expr + Term, )]
+  [Expr -> . Expr + Term, +]
+  [Expr -> . Term, )]
+  [Expr -> . Term, +]
+  [Term -> . Term * Factor, )]
+  [Term -> . Term * Factor, *]
+  [Term -> . Term * Factor, +]
+  [Term -> . Factor, )]
+  [Term -> . Factor, *]
+  [Term -> . Factor, +]
+  [Factor -> . ( Expr ), )]
+  [Factor -> . ( Expr ), *]
+  [Factor -> . ( Expr ), +]
+  [Factor -> ( . Expr ), )]
+  [Factor -> ( . Expr ), *]
+  [Factor -> ( . Expr ), +]
+  [Factor -> . id, )]
+  [Factor -> . id, *]
+  [Factor -> . id, +]
+  GOTO transitions:
+    ( -> I6
+    Expr -> I13
+    Factor -> I10
+    Term -> I9
+    id -> I7
+
+I7:
+  [Factor -> id ., )]
+  [Factor -> id ., *]
+  [Factor -> id ., +]
+
+I8:
+  [Expr -> Expr . + Term, )]
+  [Expr -> Expr . + Term, +]
+  [Factor -> ( Expr . ), $]
+  [Factor -> ( Expr . ), *]
+  [Factor -> ( Expr . ), +]
+  GOTO transitions:
+    ) -> I15
+    + -> I14
+
+I9:
+  [Expr -> Term ., )]
+  [Expr -> Term ., +]
+  [Term -> Term . * Factor, )]
+  [Term -> Term . * Factor, *]
+  [Term -> Term . * Factor, +]
+  GOTO transitions:
+    * -> I16
+
+I10:
+  [Term -> Factor ., )]
+  [Term -> Factor ., *]
+  [Term -> Factor ., +]
+
+I11:
+  [Expr -> Expr + . Term, $]
+  [Expr -> Expr + . Term, +]
+  [Term -> . Term * Factor, $]
+  [Term -> . Term * Factor, *]
+  [Term -> . Term * Factor, +]
+  [Term -> . Factor, $]
+  [Term -> . Factor, *]
+  [Term -> . Factor, +]
+  [Factor -> . ( Expr ), $]
+  [Factor -> . ( Expr ), *]
+  [Factor -> . ( Expr ), +]
+  [Factor -> . id, $]
+  [Factor -> . id, *]
+  [Factor -> . id, +]
+  GOTO transitions:
+    ( -> I1
+    Factor -> I5
+    Term -> I17
+    id -> I2
+
+I12:
+  [Term -> Term * . Factor, $]
+  [Term -> Term * . Factor, *]
+  [Term -> Term * . Factor, +]
+  [Factor -> . ( Expr ), $]
+  [Factor -> . ( Expr ), *]
+  [Factor -> . ( Expr ), +]
+  [Factor -> . id, $]
+  [Factor -> . id, *]
+  [Factor -> . id, +]
+  GOTO transitions:
+    ( -> I1
+    Factor -> I18
+    id -> I2
+
+I13:
+  [Expr -> Expr . + Term, )]
+  [Expr -> Expr . + Term, +]
+  [Factor -> ( Expr . ), )]
+  [Factor -> ( Expr . ), *]
+  [Factor -> ( Expr . ), +]
+  GOTO transitions:
+    ) -> I19
+    + -> I14
+
+I14:
+  [Expr -> Expr + . Term, )]
+  [Expr -> Expr + . Term, +]
+  [Term -> . Term * Factor, )]
+  [Term -> . Term * Factor, *]
+  [Term -> . Term * Factor, +]
+  [Term -> . Factor, )]
+  [Term -> . Factor, *]
+  [Term -> . Factor, +]
+  [Factor -> . ( Expr ), )]
+  [Factor -> . ( Expr ), *]
+  [Factor -> . ( Expr ), +]
+  [Factor -> . id, )]
+  [Factor -> . id, *]
+  [Factor -> . id, +]
+  GOTO transitions:
+    ( -> I6
+    Factor -> I10
+    Term -> I20
+    id -> I7
+
+I15:
+  [Factor -> ( Expr ) ., $]
+  [Factor -> ( Expr ) ., *]
+  [Factor -> ( Expr ) ., +]
+
+I16:
+  [Term -> Term * . Factor, )]
+  [Term -> Term * . Factor, *]
+  [Term -> Term * . Factor, +]
+  [Factor -> . ( Expr ), )]
+  [Factor -> . ( Expr ), *]
+  [Factor -> . ( Expr ), +]
+  [Factor -> . id, )]
+  [Factor -> . id, *]
+  [Factor -> . id, +]
+  GOTO transitions:
+    ( -> I6
+    Factor -> I21
+    id -> I7
+
+I17:
+  [Expr -> Expr + Term ., $]
+  [Expr -> Expr + Term ., +]
+  [Term -> Term . * Factor, $]
+  [Term -> Term . * Factor, *]
+  [Term -> Term . * Factor, +]
+  GOTO transitions:
+    * -> I12
+
+I18:
+  [Term -> Term * Factor ., $]
+  [Term -> Term * Factor ., *]
+  [Term -> Term * Factor ., +]
+
+I19:
+  [Factor -> ( Expr ) ., )]
+  [Factor -> ( Expr ) ., *]
+  [Factor -> ( Expr ) ., +]
+
+I20:
+  [Expr -> Expr + Term ., )]
+  [Expr -> Expr + Term ., +]
+  [Term -> Term . * Factor, )]
+  [Term -> Term . * Factor, *]
+  [Term -> Term . * Factor, +]
+  GOTO transitions:
+    * -> I16
+
+I21:
+  [Term -> Term * Factor ., )]
+  [Term -> Term * Factor ., *]
+  [Term -> Term * Factor ., +]
+

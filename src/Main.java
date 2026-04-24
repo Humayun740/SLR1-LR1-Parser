@@ -14,7 +14,11 @@ public class Main {
 
         Path grammarPath = Path.of(args[0]);
         Path inputPath   = Path.of(args[1]);
-        Path outputDir   = args.length >= 3 ? Path.of(args[2]) : Path.of("output");
+
+        // Auto-subdir: output/<grammar-stem>/ so runs don't overwrite each other
+        String grammarStem = grammarPath.getFileName().toString().replaceFirst("\\.txt$", "");
+        Path baseOutput = args.length >= 3 ? Path.of(args[2]) : Path.of("output");
+        Path outputDir  = baseOutput.resolve(grammarStem);
 
         try {
             Files.createDirectories(outputDir);
@@ -49,7 +53,6 @@ public class Main {
             long slrParseMs = System.currentTimeMillis() - slrParseStart;
 
             writeFile(outputDir.resolve("slr_trace.txt"), slrTrace.toString());
-            writeFile(outputDir.resolve("parse_trees.txt"), slrTrees.toString());
 
             // ── LR(1) ───────────────────────────────────────────────────────────────
             long lr1Start = System.currentTimeMillis();
@@ -78,22 +81,28 @@ public class Main {
             long lr1ParseMs = System.currentTimeMillis() - lr1ParseStart;
 
             writeFile(outputDir.resolve("lr1_trace.txt"), lr1Trace.toString());
-            writeFile(outputDir.resolve("lr1_parse_trees.txt"), lr1Trees.toString());
 
-            // ── Summaries ────────────────────────────────────────────────────────────
+            // ── parse_trees.txt: SLR trees then LR(1) trees ─────────────────────────
+            StringBuilder combinedTrees = new StringBuilder();
+            combinedTrees.append("SLR(1) PARSE TREES").append(System.lineSeparator());
+            combinedTrees.append("=".repeat(50)).append(System.lineSeparator());
+            combinedTrees.append(slrTrees);
+            combinedTrees.append("LR(1) PARSE TREES").append(System.lineSeparator());
+            combinedTrees.append("=".repeat(50)).append(System.lineSeparator());
+            combinedTrees.append(lr1Trees);
+            writeFile(outputDir.resolve("parse_trees.txt"), combinedTrees.toString());
+
+            // ── comparison.txt: summaries + full comparison ──────────────────────────
             String slrSummary = buildSummary("SLR(1)", grammarPath, inputLines.size(),
                     slrAccepted, slrParser.getStates().size(), slrTable, slrBuildMs, slrParseMs);
             String lr1Summary = buildSummary("LR(1)", grammarPath, inputLines.size(),
                     lr1Accepted, lr1Parser.getStates().size(), lr1Table, lr1BuildMs, lr1ParseMs);
-            writeFile(outputDir.resolve("slr_summary.txt"), slrSummary);
-            writeFile(outputDir.resolve("lr1_summary.txt"), lr1Summary);
-
-            // ── Comparison ───────────────────────────────────────────────────────────
             String comparison = buildComparison(grammarPath, inputLines.size(),
                     slrParser, lr1Parser, slrTable, lr1Table,
                     slrBuildMs, lr1BuildMs, slrParseMs, lr1ParseMs,
                     slrAccepted, lr1Accepted);
-            writeFile(outputDir.resolve("comparison.txt"), comparison);
+            writeFile(outputDir.resolve("comparison.txt"),
+                    slrSummary + System.lineSeparator() + lr1Summary + System.lineSeparator() + comparison);
 
             printSection("AUGMENTED GRAMMAR", grammar.toFormattedGrammar());
             printSection("SLR(1) ITEMS", slrParser.formatStates());
@@ -101,13 +110,12 @@ public class Main {
                     slrTable.toFormattedTable(slrParser.getStates().size(), grammar.getTerminals(),
                             grammar.getNonTerminals(), grammar.getStartSymbol()));
             printSection("SLR(1) PARSE TRACE", slrTrace.toString());
-            printSection("SLR(1) PARSE TREES", slrTrees.toString());
             printSection("LR(1) ITEMS", lr1Parser.formatStates());
             printSection("LR(1) PARSING TABLE",
                     lr1Table.toFormattedTable(lr1Parser.getStates().size(), grammar.getTerminals(),
                             grammar.getNonTerminals(), grammar.getStartSymbol()));
             printSection("LR(1) PARSE TRACE", lr1Trace.toString());
-            printSection("LR(1) PARSE TREES", lr1Trees.toString());
+            printSection("PARSE TREES (SLR + LR(1))", combinedTrees.toString());
             printSection("COMPARISON", comparison);
             System.out.println("Output files written to: " + outputDir.toAbsolutePath());
         } catch (Exception e) {

@@ -1,0 +1,80 @@
+SLR(1) PARSE TREES
+==================================================
+Input: id
+Reduction steps:
+  1. reduce L -> id
+  2. reduce R -> L
+  3. reduce Start -> R
+Parse tree:
+`-- Start
+    `-- R
+        `-- L
+            `-- id
+
+Input: id + id
+No parse tree (input rejected)
+
+Input: id * id
+No parse tree (input rejected)
+
+Input: id + id * id
+No parse tree (input rejected)
+
+Input: ( id )
+No parse tree (input rejected)
+
+Input: ( id + id ) * id
+No parse tree (input rejected)
+
+Input: id + id + id
+No parse tree (input rejected)
+
+Input: id * id * id
+No parse tree (input rejected)
+
+Input: ( id + id ) * ( id + id )
+No parse tree (input rejected)
+
+Input: ( ( id ) )
+No parse tree (input rejected)
+
+LR(1) PARSE TREES
+==================================================
+Input: id
+Reduction steps:
+  1. reduce L -> id
+  2. reduce R -> L
+  3. reduce Start -> R
+Parse tree:
+`-- Start
+    `-- R
+        `-- L
+            `-- id
+
+Input: id + id
+No parse tree (input rejected)
+
+Input: id * id
+No parse tree (input rejected)
+
+Input: id + id * id
+No parse tree (input rejected)
+
+Input: ( id )
+No parse tree (input rejected)
+
+Input: ( id + id ) * id
+No parse tree (input rejected)
+
+Input: id + id + id
+No parse tree (input rejected)
+
+Input: id * id * id
+No parse tree (input rejected)
+
+Input: ( id + id ) * ( id + id )
+No parse tree (input rejected)
+
+Input: ( ( id ) )
+No parse tree (input rejected)
+

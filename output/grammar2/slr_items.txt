@@ -1,0 +1,88 @@
+I0:
+  ExprPrime -> . Expr
+  Expr -> . Expr + Term
+  Expr -> . Term
+  Term -> . Term * Factor
+  Term -> . Factor
+  Factor -> . ( Expr )
+  Factor -> . id
+  GOTO transitions:
+    ( -> I1
+    Expr -> I3
+    Factor -> I5
+    Term -> I4
+    id -> I2
+
+I1:
+  Expr -> . Expr + Term
+  Expr -> . Term
+  Term -> . Term * Factor
+  Term -> . Factor
+  Factor -> . ( Expr )
+  Factor -> ( . Expr )
+  Factor -> . id
+  GOTO transitions:
+    ( -> I1
+    Expr -> I6
+    Factor -> I5
+    Term -> I4
+    id -> I2
+
+I2:
+  Factor -> id .
+
+I3:
+  ExprPrime -> Expr .
+  Expr -> Expr . + Term
+  GOTO transitions:
+    + -> I7
+
+I4:
+  Expr -> Term .
+  Term -> Term . * Factor
+  GOTO transitions:
+    * -> I8
+
+I5:
+  Term -> Factor .
+
+I6:
+  Expr -> Expr . + Term
+  Factor -> ( Expr . )
+  GOTO transitions:
+    ) -> I9
+    + -> I7
+
+I7:
+  Expr -> Expr + . Term
+  Term -> . Term * Factor
+  Term -> . Factor
+  Factor -> . ( Expr )
+  Factor -> . id
+  GOTO transitions:
+    ( -> I1
+    Factor -> I5
+    Term -> I10
+    id -> I2
+
+I8:
+  Term -> Term * . Factor
+  Factor -> . ( Expr )
+  Factor -> . id
+  GOTO transitions:
+    ( -> I1
+    Factor -> I11
+    id -> I2
+
+I9:
+  Factor -> ( Expr ) .
+
+I10:
+  Expr -> Expr + Term .
+  Term -> Term . * Factor
+  GOTO transitions:
+    * -> I8
+
+I11:
+  Term -> Term * Factor .
+
